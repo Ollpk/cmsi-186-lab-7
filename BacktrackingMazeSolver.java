@@ -1,3 +1,4 @@
+import java.util.EmptyStackException;
 import java.util.Stack;
 
 public class BacktrackingMazeSolver {
@@ -8,42 +9,61 @@ public class BacktrackingMazeSolver {
      */
     public boolean solve(Maze maze, Maze.MazeListener listener) {
 
-        // TODO - if listener is null, throw an IllegalArgumentException
-        // saying "Listener cannot be null"
+        if (listener == null) {
+            throw new IllegalArgumentException("Listener cannot be null");
+        }
 
         var path = new Stack<Maze.Location>();
 
         // TODO: initialize the current location to the initial rat location
+        var current = maze.getInitialRatPosition();
 
         // Solution loop. At each step, place the rat and notify listener.
         while (true) {
+            current.place(Maze.Cell.RAT);
+            listener.mazeChanged(maze);
+            // TODO: Did we reach the desired end cell? If so, return true
+            if (current.isAt(maze.getInitialCheesePosition())) {
+                return true;
+            }
 
             // TODO: Place the rat in the current cell
+            current.place(Maze.Cell.RAT);
 
             // TODO: Notify the listener
+            listener.mazeChanged(maze);
 
-            // TODO: Did we reach the desired end cell? If so, return true
-
-            // Move to an adjacent open cell, leaving a breadcrumb. If we
-            // can't move at all, backtrack. If there's nowhere to backtrack
-            // to, we're totally stuck.
-
-            if (current.above().canBeMovedTo()) {
+            // Move to an adjacent open cell, leaving a breadcrumb.
+            // Comment out code below.
+            if (current.above().canBeMovedTo()) { // above
                 path.push(current);
                 current.place(Maze.Cell.PATH);
+                listener.mazeChanged(maze);
                 current = current.above();
-            } else if (current.toTheRight().canBeMovedTo()) {
-                // TODO Fill this in
-            } else if (current.below().canBeMovedTo()) {
-                // TODO Fill this in
-            } else if (current.toTheLeft().canBeMovedTo()) {
-                // TODO Fill this in
+            } else if (current.below().canBeMovedTo()) { // below
+                path.push(current);
+                current.place(Maze.Cell.PATH);
+                listener.mazeChanged(maze);
+                current = current.below();
+            } else if (current.toTheLeft().canBeMovedTo()) { // left
+                path.push(current);
+                current.place(Maze.Cell.PATH);
+                listener.mazeChanged(maze);
+                current = current.toTheLeft();
+            } else if (current.toTheRight().canBeMovedTo()) { // right
+                path.push(current);
+                current.place(Maze.Cell.PATH);
+                listener.mazeChanged(maze);
+                current = current.toTheLeft();
             } else {
-
-                // TODO Fill this in ... mark this cell TRIED. If the path is
-                // empty, return false. Otherwise, back up (by popping from the
-                // path that is being built up)
-
+                current.place(Maze.Cell.TRIED);
+                listener.mazeChanged(maze);
+                try {
+                    current = path.pop();
+                } catch (EmptyStackException e) {
+                    // vSystem.out.println("You have no area to go back to!");
+                    return false;
+                }
             }
         }
     }
