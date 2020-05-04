@@ -15,26 +15,21 @@ public class BacktrackingMazeSolver {
 
         var path = new Stack<Maze.Location>();
 
-        // TODO: initialize the current location to the initial rat location
         var current = maze.getInitialRatPosition();
 
         // Solution loop. At each step, place the rat and notify listener.
         while (true) {
             current.place(Maze.Cell.RAT);
             listener.mazeChanged(maze);
-            // TODO: Did we reach the desired end cell? If so, return true
+
             if (current.isAt(maze.getInitialCheesePosition())) {
                 return true;
             }
 
-            // TODO: Place the rat in the current cell
             current.place(Maze.Cell.RAT);
 
-            // TODO: Notify the listener
             listener.mazeChanged(maze);
 
-            // Move to an adjacent open cell, leaving a breadcrumb.
-            // Comment out code below.
             if (current.above().canBeMovedTo()) { // above
                 path.push(current);
                 current.place(Maze.Cell.PATH);
@@ -61,7 +56,7 @@ public class BacktrackingMazeSolver {
                 try {
                     current = path.pop();
                 } catch (EmptyStackException e) {
-                    // vSystem.out.println("You have no area to go back to!");
+                    // System.out.println("You have no area to go back to!");
                     return false;
                 }
             }

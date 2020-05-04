@@ -184,9 +184,6 @@ public class Maze {
         }
     }
 
-    // This needs a constructor and a toString method. You might need to do some
-    // research on Java enums.
-
     public interface MazeListener {
         void mazeChanged(Maze maze);
     }
